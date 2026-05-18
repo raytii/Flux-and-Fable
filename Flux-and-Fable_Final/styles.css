@@ -1,0 +1,178 @@
+/* ── Design tokens ──────────────────────────────────────────────────────── */
+:root {
+  --page-bg:         #0b0b0c;
+  --sheet-bg:        #efefeb;
+  --sheet-line:      rgba(0, 0, 0, 0.16);
+  --sheet-line-soft: rgba(0, 0, 0, 0.1);
+  --text:            #0f0f10;
+  --text-faint:      rgba(15, 15, 16, 0.44);
+  /* Left hand = warm gold; Right hand = cool cyan (match overlay colours) */
+  --left-hand-col:   rgba(200, 160, 60, 0.90);
+  --right-hand-col:  rgba(60, 160, 200, 0.90);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0; min-height: 100%;
+  background: var(--page-bg); color: var(--text);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system,
+               BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+body { display: grid; place-items: center; padding: 28px; }
+button, input { font: inherit; }
+
+/* ── Sheet ───────────────────────────────────────────────────────────────── */
+.sheet {
+  width: min(1120px, calc(100vw - 56px));
+  min-height: min(860px, calc(100svh - 56px));
+  background: var(--sheet-bg);
+  border-radius: 12px;
+  box-shadow: 0 28px 90px rgba(0,0,0,0.35);
+  display: grid;
+  grid-template-rows: auto minmax(0,1fr) auto;
+  overflow: hidden;
+}
+
+.sheet:fullscreen, .sheet:-webkit-full-screen {
+  width: 100vw; height: 100vh; min-height: 100vh;
+  border-radius: 0; box-shadow: none;
+}
+.sheet:fullscreen .canvas-shell, .sheet:-webkit-full-screen .canvas-shell {
+  height: calc(100vh - 54px - 138px);
+  max-height: none; min-height: 0;
+}
+
+/* ── Header ──────────────────────────────────────────────────────────────── */
+.sheet-head {
+  display: grid; grid-template-columns: 44px 1fr 44px;
+  align-items: center; min-height: 54px;
+  padding: 0 22px; border-bottom: 1px solid var(--sheet-line);
+}
+.sheet-mark, .micro-title { font-size:10px; letter-spacing:0.18em; text-transform:uppercase; }
+.sheet-mark           { color: var(--text-faint); }
+.sheet-mark:last-child { text-align: right; }
+.micro-title          { margin:0; text-align:center; font-weight:600; }
+
+/* ── Canvas shell ────────────────────────────────────────────────────────── */
+.sheet-media { display:grid; align-items:center; padding:18px 18px 0; }
+
+.canvas-shell {
+  position: relative;
+  border: 1px solid var(--sheet-line);
+  background: #000; border-radius: 4px; overflow: hidden;
+  height: min(60vh, 560px); min-height: 380px;
+}
+
+#fieldCanvas  { display:block; width:100%; height:100%; background:#000; }
+#rippleCanvas { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+
+/* ── Gesture hint ────────────────────────────────────────────────────────── */
+.gesture-hint {
+  position: absolute; bottom: 16px; left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none; opacity: 0;
+  transition: opacity 400ms ease;
+}
+.gesture-hint.visible { opacity: 1; }
+.gesture-hint span {
+  display: block;
+  background: rgba(15,15,16,0.55);
+  color: rgba(245,245,242,0.88);
+  font-size: 11px; letter-spacing: 0.10em; text-transform: uppercase;
+  padding: 6px 14px; border-radius: 999px; white-space: nowrap;
+}
+
+/* ── Control strip ───────────────────────────────────────────────────────── */
+.control-strip {
+  display: grid; grid-template-columns: auto 1fr;
+  align-items: stretch; padding: 0 18px 18px;
+}
+
+.button-group {
+  display:flex; align-items:flex-start; flex-wrap:wrap;
+  gap:10px; min-height:114px;
+  border-top: 1px solid var(--sheet-line);
+  padding-top:16px; padding-right:18px;
+}
+
+.slider-group {
+  min-height:114px;
+  border-top: 1px solid var(--sheet-line);
+  padding-top:16px; display:grid; gap:0;
+}
+.slider-group--two { grid-template-columns: repeat(2, minmax(0,1fr)); }
+
+/* ── Hand indicators ─────────────────────────────────────────────────────── */
+/* Two coloured 2px bars above the sliders — show which hand is active.     */
+/* Left (gold) = coupling; Right (cyan) = bias.                             */
+.hand-indicator {
+  height: 2px; width: 100%; border-radius: 1px;
+  background: transparent;
+  transition: background 200ms ease, opacity 200ms ease;
+  margin-bottom: 4px;
+  opacity: 0;
+}
+.hand-indicator--left.active  { background: var(--left-hand-col);  opacity: 1; }
+.hand-indicator--right.active { background: var(--right-hand-col); opacity: 1; }
+
+/* ── Control blocks ──────────────────────────────────────────────────────── */
+.control-block { display:grid; align-content:start; gap:6px; padding:0 16px; }
+.control-block + .control-block { border-left: 1px solid var(--sheet-line-soft); }
+
+.control-label {
+  display:flex; justify-content:space-between;
+  gap:10px; align-items:baseline;
+  font-size:12px; letter-spacing:0.01em;
+}
+.control-label strong { font-size:11px; letter-spacing:0.02em; font-feature-settings:'tnum' 1; }
+
+/* ── Buttons ─────────────────────────────────────────────────────────────── */
+.icon-button, .text-button { border:1px solid var(--sheet-line); background:transparent; color:var(--text); }
+.icon-button {
+  width:38px; height:38px; display:inline-grid; place-items:center;
+  border-radius:999px; cursor:pointer; flex-shrink:0;
+  transition: transform 120ms ease, background 120ms ease, border-color 120ms ease;
+}
+.icon-button:hover, .text-button:hover { transform: translateY(-1px); }
+.icon-button svg { width:18px; height:18px; stroke:currentColor; stroke-width:1.8; fill:none; stroke-linecap:round; stroke-linejoin:round; }
+.icon-button.is-on { background:#111; color:#f5f5f2; border-color:#111; }
+.text-button { min-height:38px; padding:0 14px; border-radius:999px; cursor:pointer; font-size:11px; letter-spacing:0.08em; text-transform:uppercase; }
+
+/* ── Sliders ─────────────────────────────────────────────────────────────── */
+input[type='range'] { -webkit-appearance:none; appearance:none; width:100%; height:22px; margin:0; background:transparent; cursor:ew-resize; }
+input[type='range']::-webkit-slider-runnable-track { height:2px; background:rgba(0,0,0,0.78); }
+input[type='range']::-moz-range-track                { height:2px; background:rgba(0,0,0,0.78); }
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance:none; appearance:none;
+  width:16px; height:16px; margin-top:-7px;
+  border-radius:50%; border:1px solid #101011;
+  background:#fbfbf8; box-shadow:0 0 0 2px #fbfbf8 inset;
+  transition: transform 60ms ease;
+}
+input[type='range']::-moz-range-thumb {
+  width:16px; height:16px; border-radius:50%;
+  border:1px solid #101011; background:#fbfbf8; box-shadow:0 0 0 2px #fbfbf8 inset;
+}
+
+/* ── Responsive: mid ─────────────────────────────────────────────────────── */
+@media (max-width: 1080px) {
+  body { padding:16px; align-items:start; }
+  .sheet { width:min(960px, calc(100vw - 32px)); min-height:auto; }
+  .canvas-shell { height:min(54vh,500px); }
+  .control-strip { grid-template-columns:1fr; }
+  .button-group  { padding-right:0; padding-bottom:16px; }
+  .slider-group--two { border-top:none; grid-template-columns:1fr; }
+  .control-block { padding:14px 0 0; border-top:1px solid var(--sheet-line-soft); }
+  .control-block + .control-block { border-left:none; }
+}
+
+/* ── Responsive: mobile ──────────────────────────────────────────────────── */
+@media (max-width: 720px) {
+  .sheet { width:calc(100vw - 24px); }
+  .sheet-head { padding:0 14px; grid-template-columns:30px 1fr 30px; }
+  .sheet-media { padding:12px 12px 0; }
+  .canvas-shell { min-height:280px; height:44vh; }
+  .control-strip { padding:0 12px 12px; }
+  .button-group  { flex-wrap:wrap; }
+}

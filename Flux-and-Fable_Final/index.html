@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Flux and Fable</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="sheet">
+
+      <header class="sheet-head">
+        <span class="sheet-mark">01</span>
+        <p class="micro-title">FLUX AND FABLE / EXHIBITION BUILD</p>
+        <span class="sheet-mark">WEB</span>
+      </header>
+
+      <section class="sheet-media">
+        <div class="canvas-shell">
+          <canvas id="fieldCanvas" aria-label="Flux and Fable field"></canvas>
+          <canvas id="rippleCanvas" aria-hidden="true"></canvas>
+          <!-- Hint: shown when camera on but no hands detected -->
+          <div id="gestureHint" class="gesture-hint" aria-hidden="true">
+            <span>Left hand · Entanglement &nbsp;/&nbsp; Right hand · Drift &nbsp; Move closer or further</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="control-strip" aria-label="control surface">
+
+        <div class="button-group">
+          <button id="audioToggle"  class="icon-button" type="button" aria-label="Enable sound"  aria-pressed="false"></button>
+          <button id="cameraToggle" class="icon-button" type="button" aria-label="Enable camera" aria-pressed="false"></button>
+
+          <button id="resetField" class="text-button" type="button">Reset</button>
+          <button id="burstField" class="text-button" type="button">Rift</button>
+
+          <button id="fullscreenToggle" class="icon-button" type="button"
+            aria-label="Fullscreen" style="margin-left:auto;"></button>
+        </div>
+
+        <div class="slider-group slider-group--two">
+
+          <!-- LEFT hand → Entanglement (coupling) -->
+          <section class="control-block">
+            <div id="leftHandIndicator"  class="hand-indicator hand-indicator--left"  aria-hidden="true"></div>
+            <label class="control-label" for="coupling">
+              <span>Entanglement</span>
+              <strong id="couplingValue">0.92</strong>
+            </label>
+            <input id="coupling" type="range"
+              min="-1.4" max="1.6" step="0.001" value="0.92" />
+          </section>
+
+          <!-- RIGHT hand → Drift (bias) -->
+          <section class="control-block">
+            <div id="rightHandIndicator" class="hand-indicator hand-indicator--right" aria-hidden="true"></div>
+            <label class="control-label" for="bias">
+              <span>Drift</span>
+              <strong id="biasValue">0.28</strong>
+            </label>
+            <input id="bias" type="range"
+              min="-1.2" max="1.2" step="0.001" value="0.28" />
+          </section>
+
+        </div>
+      </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4/hands.js"      crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.3/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/tone@14.8.49/build/Tone.js"></script>
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>
